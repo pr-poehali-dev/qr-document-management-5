@@ -1,0 +1,21 @@
+{
+  "tests": [
+    {
+      "name": "Test telegram webhook",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "message": {
+          "chat": {"id": 123456},
+          "text": "/start",
+          "from": {"id": 123456, "username": "testuser"}
+        }
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "ok": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

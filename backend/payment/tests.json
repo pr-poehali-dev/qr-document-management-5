@@ -1,0 +1,32 @@
+{
+  "tests": [
+    {
+      "name": "Get balance",
+      "method": "GET",
+      "path": "/?action=balance&account_id=main",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "balance": "number"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Process card payment",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "process_payment",
+        "payment_type": "card",
+        "amount": 100,
+        "card_number": "4111111111111111",
+        "account_id": "main",
+        "description": "Test payment"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -13,6 +13,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import Icon from '@/components/ui/icon';
 import { toast } from '@/hooks/use-toast';
+import { ChatSystem } from '@/components/ChatSystem';
+import { PaymentSystem } from '@/components/PaymentSystem';
 
 type UserRole = 'client' | 'cashier' | 'head_cashier' | 'admin' | 'creator' | 'nikitovsky' | 'superadmin' | 
   'manager' | 'support' | 'specialist' | 'technician' | 'operator' | 'coordinator' | 'analyst' | 
@@ -428,6 +430,10 @@ const Index = () => {
     toast({ title: "Печать", description: "Анкета отправлена на печать" });
   };
 
+  const fetchBalance = () => {
+    toast({ title: "Обновлено", description: "Баланс обновлен" });
+  };
+
   const canCreateUsers = userRole === 'nikitovsky' || userRole === 'superadmin' || userRole === 'creator' || userRole === 'manager' || userRole === 'support';
   const canManageRoles = userRole === 'nikitovsky' || userRole === 'superadmin';
   const canDeleteItems = userRole === 'admin' || userRole === 'creator' || userRole === 'nikitovsky' || userRole === 'superadmin';
@@ -567,9 +573,10 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="main" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-gray-800 border-gray-700">
+          <TabsList className="grid w-full grid-cols-7 bg-gray-800 border-gray-700">
             <TabsTrigger value="main" className="data-[state=active]:bg-gray-700">Главная</TabsTrigger>
             <TabsTrigger value="management" className="data-[state=active]:bg-gray-700">Управление</TabsTrigger>
+            <TabsTrigger value="payments" className="data-[state=active]:bg-gray-700">Платежи</TabsTrigger>
             <TabsTrigger value="archive" className="data-[state=active]:bg-gray-700">Архив</TabsTrigger>
             {canCreateUsers && <TabsTrigger value="users" className="data-[state=active]:bg-gray-700">Пользователи</TabsTrigger>}
             {canAccessChat && <TabsTrigger value="chat" className="data-[state=active]:bg-gray-700">Чаты</TabsTrigger>}
@@ -712,6 +719,10 @@ const Index = () => {
             </div>
           </TabsContent>
 
+          <TabsContent value="payments">
+            <PaymentSystem onPaymentComplete={() => fetchBalance()} />
+          </TabsContent>
+
           <TabsContent value="archive">
             <Card className="bg-gray-800 border-gray-700">
               <CardHeader>
@@ -747,14 +758,13 @@ const Index = () => {
 
           {canAccessChat && (
             <TabsContent value="chat">
-              <Card className="bg-gray-800 border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-white">Чаты с клиентами</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-400">Выберите клиента для начала общения</p>
-                </CardContent>
-              </Card>
+              <ChatSystem currentUser={currentUser} userRole={userRole || ''} />
+            </TabsContent>
+          )}
+          
+          {userRole === 'client' && (
+            <TabsContent value="chat">
+              <ChatSystem currentUser={currentUser} userRole={userRole} clientPhone={clients.find(c => c.name === currentUser)?.phone} />
             </TabsContent>
           )}
         </Tabs>
